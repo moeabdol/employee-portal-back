@@ -39,14 +39,16 @@ describe("Users Controller", () => {
       if (err) console.log(err);
     });
     done();
-    // mongoose.disconnect(done);
   });
 
   it("GET /api/users should get all users", (done) => {
     request(app)
       .get("/api/users")
       .expect("Content-Type", /json/)
-      .expect(200);
-    done();
+      .expect(200)
+      .expect((res) => {
+        res.body.length.should.equal(2);
+      })
+      .end(done);
   });
 });
