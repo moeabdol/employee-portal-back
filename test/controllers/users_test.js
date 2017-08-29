@@ -189,12 +189,13 @@ describe("Users Controller", () => {
   });
 
   it("DELETE /api/users/:id should not destroy non-existant user", (done) => {
+    User.findByIdAndRemove(mohammadId);
     request(app)
-      .delete("/api/users/12345")
+      .delete(`/api/users/${mohammadId}`)
       .expect("Content-Type", /json/)
-      .expect(500)
+      .expect(400)
       .expect((res) => {
-        res.body.message.should.equal("Something went wrong!");
+        res.body.message.should.equal("Resource not found!");
       })
       .end(done);
   });

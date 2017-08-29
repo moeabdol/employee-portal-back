@@ -27,6 +27,7 @@ const create = (req, res) => {
     if (err) return res.status(500).json({ message: "Something went wrong!" });
 
     res.status(201).json({
+      id: user._id,
       username: user.username,
       email: user.email,
       role: user.role,
@@ -52,6 +53,7 @@ const update = (req, res) => {
       }
 
       res.status(200).json({
+        id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
@@ -62,8 +64,11 @@ const update = (req, res) => {
 };
 
 const destroy = (req, res) => {
-  User.findByIdAndRemove(req.params.id, (err) => {
+  User.findByIdAndRemove(req.params.id, (err, user) => {
     if (err) return res.status(500).json({ message: "Something went wrong!" });
+    if (!user) {
+      return res.status(400).json({ message: "Resource not found!" });
+    }
     res.status(200).json({ message: "Resource deleted successfully" });
   });
 };
