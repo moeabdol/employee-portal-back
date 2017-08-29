@@ -15,7 +15,23 @@ const show = (req, res) => {
   });
 };
 
+const create = (req, res) => {
+  let user = new User(req.body);
+  user.save((err, user) => {
+    if (err) return res.status(500).json({ message: "Something went wrong!" });
+    res.status(201).json({
+      user: {
+        username: user.username,
+        email: user.email,
+        role: user.role
+      },
+      message: "User created successfully"
+    });
+  });
+};
+
 module.exports = {
   index,
-  show
+  show,
+  create
 };

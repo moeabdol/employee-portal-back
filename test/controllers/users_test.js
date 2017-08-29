@@ -66,4 +66,74 @@ describe("Users Controller", () => {
       })
       .end(done);
   });
+
+  it("POST /api/users should create a new user", (done) => {
+    request(app)
+      .post("/api/users")
+      .send({
+        username: "anwar",
+        email: "anwar@axisx.com",
+        password: "12345",
+        role: "manager"
+      })
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .expect((res) => {
+        res.body.message.should.equal("User created successfully");
+        res.body.user.username.should.equal("anwar");
+        res.body.user.email.should.equal("anwar@axisx.com");
+        res.body.user.role.should.equal("manager");
+        User.count((err, count) => {
+          if (err) done(err);
+          count.should.equal(3);
+        });
+      })
+      .end(done);
+  });
+
+  it("POST /api/users should not create a new username if user already exists",
+    (done) => {
+      request(app)
+        .post("/api/users")
+        .send({
+          username: "mohammad",
+          email: "test@gmail.com",
+          password: "12345",
+          role: "manager"
+        })
+        .expect("Content-Type", /json/)
+        .expect(500)
+        .expect((res) => {
+          res.body.message.should.equal("Something went wrong!");
+          User.count((err, count) => {
+            if (err) done(err);
+            count.should.equal(3);
+          });
+        })
+        .end(done);
+    }
+  );
+
+  it("POST /api/users should not create a new user if email already exists",
+    (done) => {
+      request(app)
+        .post("/api/users")
+        .send({
+          username: "ahmed",
+          email: "mohd.a.saed@gmail.com",
+          password: "12345",
+          role: "manager"
+        })
+        .expect("Content-Type", /json/)
+        .expect(500)
+        .expect((res) => {
+          res.body.message.should.equal("Something went wrong!");
+          User.count((err, count) => {
+            if (err) done(err);
+            count.should.equal(3);
+          });
+        })
+        .end(done);
+    }
+  );
 });
