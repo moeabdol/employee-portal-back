@@ -13,6 +13,7 @@ const show = (req, res) => {
     if (!user) return res.status(404).json({ message: "Resource not found!" });
 
     res.status(200).json({
+      id: user._id,
       username: user.username,
       email: user.email,
       role: user.role
