@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 // const path       = require("path");
 const cors       = require("cors");
 const mongoose   = require("mongoose");
+const passport   = require("passport");
 
 const app = express();
 const port = 3000;
@@ -21,6 +22,9 @@ mongoose.connect(config.db, { useMongoClient: true }, (err) => {
 
 app.use(cors());
 app.use(bodyParser.json());
+
+require("./config/passport")(passport);
+app.use(passport.initialize());
 
 app.use("/api", routes);
 
