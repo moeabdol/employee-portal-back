@@ -55,8 +55,7 @@ describe("Users Controller", () => {
 
   it("GET /api/users/:id should get specific user", (done) => {
     request(app)
-      .get("/api/users/:id")
-      .send({ id: mohammadId })
+      .get(`/api/users/${mohammadId}`)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
