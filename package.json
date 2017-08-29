@@ -1,0 +1,17 @@
+{
+  "name": "employee-portal-back",
+  "version": "1.0.0",
+  "description": "Example employee portal backend.",
+  "main": "server.js",
+  "repository": "https://github.com/moeabdol/employee-portal-back",
+  "author": "moeabdol <mohd.a.saed@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0",
+    "nodemon": "^1.11.0"
+  }
+}
