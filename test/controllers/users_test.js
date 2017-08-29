@@ -59,9 +59,9 @@ describe("Users Controller", () => {
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
-        res.body.username.should.equal("mohammad");
-        res.body.email.should.equal("mohd.a.saed@gmail.com");
-        res.body.role.should.equal("admin");
+        res.body.user.username.should.equal("mohammad");
+        res.body.user.email.should.equal("mohd.a.saed@gmail.com");
+        res.body.user.role.should.equal("admin");
       })
       .end(done);
   });
@@ -78,7 +78,7 @@ describe("Users Controller", () => {
       .expect("Content-Type", /json/)
       .expect(201)
       .expect((res) => {
-        res.body.message.should.equal("User created successfully");
+        res.body.message.should.equal("Resource created successfully");
         res.body.user.username.should.equal("anwar");
         res.body.user.email.should.equal("anwar@axisx.com");
         res.body.user.role.should.equal("manager");
@@ -135,4 +135,41 @@ describe("Users Controller", () => {
         .end(done);
     }
   );
+
+  it("PUT /api/users/:id should update existing user", (done) => {
+    request(app)
+      .put(`/api/users/${mohammadId}`)
+      .send({
+        email: "admin.r99@gmail.com",
+        role: "hr"
+      })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        res.body.message.should.equal("Resource updated successfully");
+        res.body.user.username.should.equal("mohammad");
+        res.body.user.email.should.equal("admin.r99@gmail.com");
+        res.body.user.role.should.equal("hr");
+        User.count((err, count) => {
+          if (err) done(err);
+          count.should.equal(3);
+        });
+      })
+      .end(done);
+  });
+
+  it("PUT /api/users/:id should not update non-existant user", (done) => {
+    request(app)
+      .put("/api/users/12345")
+      .send({
+        email: "admin.r99@gmail.com",
+        role: "hr"
+      })
+      .expect("Content-Type", /json/)
+      .expect(500)
+      .expect((res) => {
+        res.body.message.should.equal("Something went wrong!");
+      })
+      .end(done);
+  });
 });
