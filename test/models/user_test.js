@@ -2,25 +2,13 @@ process.env.NODE_ENV = "test";
 
 const chai = require("chai");
 const should = chai.should();
-const mongoose = require("mongoose");
-const config = require("../../config");
-
-let User;
-try {
-  User = mongoose.model("User");
-} catch (error) {
-  User = require("../../models/user");
-}
+const mongoose = require("../../config/mongoose");
+const User = mongoose.model("User");
 
 describe("User model", () => {
   let mohammad, abdelgadir;
 
   before((done) => {
-    mongoose.Promise = global.Promise;
-    mongoose.connect(config.testdb, { useMongoClient: true }, (err) => {
-      if (err) { console.log(err); }
-    });
-
     mohammad = new User({
       username: "mohammad",
       email: "mohd.a.saed@gmail.com",
@@ -50,11 +38,20 @@ describe("User model", () => {
     User.remove({}, (err) => {
       if (err) console.log(err);
     });
-    mongoose.disconnect(done);
+    done();
   });
 
-  it("should find user by username", (done) => {
+  it("should return the correct number of users", (done) => {
+    User.count((err, count) => {
+      if (err) done(err);
+      count.should.equal(2);
+      done();
+    });
+  });
+
+  it("should find specific user by username", (done) => {
     User.findByUsername("mohammad", (err, user) => {
+      if (err) done(err);
       should.exist(user);
       user.username.should.equal("mohammad");
       user.email.should.equal("mohd.a.saed@gmail.com");
@@ -63,8 +60,9 @@ describe("User model", () => {
     });
   });
 
-  it("should find user by email", (done) => {
+  it("should find specific user by email", (done) => {
     User.findByEmail("abdelgadir@axisx.com", (err, user) => {
+      if (err) done(err);
       should.exist(user);
       user.username.should.equal("abdelgadir");
       user.email.should.equal("abdelgadir@axisx.com");

@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node app.js",
-    "test": "mocha --watch test/**/*.js",
+    "test": "mocha test/**/*.js",
     "cover": "istanbul cover _mocha test/**/*.js"
   },
   "dependencies": {
