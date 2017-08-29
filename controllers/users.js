@@ -66,9 +66,17 @@ const update = (req, res) => {
   });
 };
 
+const destroy = (req, res) => {
+  User.findByIdAndRemove(req.params.id, (err) => {
+    if (err) return res.status(500).json({ message: "Something went wrong!" });
+    res.status(200).json({ message: "Resource deleted successfully" });
+  });
+};
+
 module.exports = {
   index,
   show,
   create,
-  update
+  update,
+  destroy
 };

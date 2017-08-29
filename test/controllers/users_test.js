@@ -172,4 +172,30 @@ describe("Users Controller", () => {
       })
       .end(done);
   });
+
+  it("DELETE /api/users/:id should destroy user", (done) => {
+    request(app)
+      .delete(`/api/users/${mohammadId}`)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        res.body.message.should.equal("Resource deleted successfully");
+        User.count((err, count) => {
+          if (err) done(err);
+          count.should.equal(2);
+        });
+      })
+      .end(done);
+  });
+
+  it("DELETE /api/users/:id should not destroy non-existant user", (done) => {
+    request(app)
+      .delete("/api/users/12345")
+      .expect("Content-Type", /json/)
+      .expect(500)
+      .expect((res) => {
+        res.body.message.should.equal("Something went wrong!");
+      })
+      .end(done);
+  });
 });
