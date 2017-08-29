@@ -12,8 +12,18 @@ const UserSchema = mongoose.Schema({
   role:     { type: String, enum: ["admin", "hr", "manager", "user"] }
 });
 
+UserSchema.index({ username: 1, email: 1 }, { unique: true });
+
 UserSchema.statics.findByUsername = function(username, done) {
   this.findOne({ username: username }, (err, user) => {
+    if (err) return done(err, false);
+    if (!user) return done(null, false);
+    done(null, user);
+  });
+};
+
+UserSchema.statics.findByEmail = function(email, done) {
+  this.findOne({ email: email }, (err, user) => {
     if (err) return done(err, false);
     if (!user) return done(null, false);
     done(null, user);

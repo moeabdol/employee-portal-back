@@ -13,14 +13,37 @@ try {
 }
 
 describe("User model", () => {
-  let dummyUser;
+  let mohammad, abdelgadir;
 
   before((done) => {
     mongoose.Promise = global.Promise;
     mongoose.connect(config.testdb, { useMongoClient: true }, (err) => {
       if (err) { console.log(err); }
-      done();
     });
+
+    mohammad = new User({
+      username: "mohammad",
+      email: "mohd.a.saed@gmail.com",
+      password: "12345",
+      role: "admin"
+    });
+
+    abdelgadir = new User({
+      username: "abdelgadir",
+      email: "abdelgadir@axisx.com",
+      password: "12345",
+      role: "hr"
+    });
+
+    mohammad.save((err) => {
+      if (err) return done(err);
+    });
+
+    abdelgadir.save((err) => {
+      if (err) return done(err);
+    });
+
+    done();
   });
 
   after((done) => {
@@ -30,24 +53,22 @@ describe("User model", () => {
     mongoose.disconnect(done);
   });
 
-  beforeEach((done) => {
-    dummyUser = new User({
-      username: "moeabdol",
-      email: "admin.r99@gmail.com",
-      password: "12345",
-      role: "admin"
-    });
-
-    dummyUser.save((err) => {
-      if (err) return done(err);
+  it("should find user by username", (done) => {
+    User.findByUsername("mohammad", (err, user) => {
+      should.exist(user);
+      user.username.should.equal("mohammad");
+      user.email.should.equal("mohd.a.saed@gmail.com");
+      user.role.should.equal("admin");
       done();
     });
   });
 
-  it("should find user by username", (done) => {
-    User.findByUsername("moeabdol", (err, user) => {
+  it("should find user by email", (done) => {
+    User.findByEmail("abdelgadir@axisx.com", (err, user) => {
       should.exist(user);
-      user.username.should.equal("moeabdol");
+      user.username.should.equal("abdelgadir");
+      user.email.should.equal("abdelgadir@axisx.com");
+      user.role.should.equal("hr");
       done();
     });
   });
