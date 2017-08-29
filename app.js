@@ -23,7 +23,7 @@ mongoose.connect(config.db, { useMongoClient: true }, (err) => {
 app.use(cors());
 app.use(bodyParser.json());
 
-require("./config/passport")(passport);
+// require("./config/passport")(passport);
 app.use(passport.initialize());
 
 app.use("/api", routes);
@@ -35,3 +35,5 @@ app.get("*", (req, res) => {
 app.listen(port, () => {
   console.log("Server started on port ", port);
 });
+
+module.exports = app;
