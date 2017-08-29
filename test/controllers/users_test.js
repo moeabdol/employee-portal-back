@@ -59,9 +59,9 @@ describe("Users Controller", () => {
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
-        res.body.user.username.should.equal("mohammad");
-        res.body.user.email.should.equal("mohd.a.saed@gmail.com");
-        res.body.user.role.should.equal("admin");
+        res.body.username.should.equal("mohammad");
+        res.body.email.should.equal("mohd.a.saed@gmail.com");
+        res.body.role.should.equal("admin");
       })
       .end(done);
   });
@@ -79,9 +79,9 @@ describe("Users Controller", () => {
       .expect(201)
       .expect((res) => {
         res.body.message.should.equal("Resource created successfully");
-        res.body.user.username.should.equal("anwar");
-        res.body.user.email.should.equal("anwar@axisx.com");
-        res.body.user.role.should.equal("manager");
+        res.body.username.should.equal("anwar");
+        res.body.email.should.equal("anwar@axisx.com");
+        res.body.role.should.equal("manager");
         User.count((err, count) => {
           if (err) done(err);
           count.should.equal(3);
@@ -147,9 +147,9 @@ describe("Users Controller", () => {
       .expect(200)
       .expect((res) => {
         res.body.message.should.equal("Resource updated successfully");
-        res.body.user.username.should.equal("mohammad");
-        res.body.user.email.should.equal("admin.r99@gmail.com");
-        res.body.user.role.should.equal("hr");
+        res.body.username.should.equal("mohammad");
+        res.body.email.should.equal("admin.r99@gmail.com");
+        res.body.role.should.equal("hr");
         User.count((err, count) => {
           if (err) done(err);
           count.should.equal(3);

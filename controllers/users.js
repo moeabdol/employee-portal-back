@@ -13,11 +13,9 @@ const show = (req, res) => {
     if (!user) return res.status(404).json({ message: "Resource not found!" });
 
     res.status(200).json({
-      user: {
-        username: user.username,
-        email: user.email,
-        role: user.role
-      }
+      username: user.username,
+      email: user.email,
+      role: user.role
     });
   });
 };
@@ -28,11 +26,9 @@ const create = (req, res) => {
     if (err) return res.status(500).json({ message: "Something went wrong!" });
 
     res.status(201).json({
-      user: {
-        username: user.username,
-        email: user.email,
-        role: user.role
-      },
+      username: user.username,
+      email: user.email,
+      role: user.role,
       message: "Resource created successfully"
     });
   });
@@ -55,11 +51,9 @@ const update = (req, res) => {
       }
 
       res.status(200).json({
-        user: {
-          username: user.username,
-          email: user.email,
-          role: user.role
-        },
+        username: user.username,
+        email: user.email,
+        role: user.role,
         message: "Resource updated successfully"
       });
     });
