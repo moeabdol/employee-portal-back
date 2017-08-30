@@ -42,7 +42,7 @@ describe("Users Controller", () => {
     done();
   });
 
-  it("Post /api/users/register with valid credintials should register new " +
+  it("POST /api/users/register with valid credintials should register new " +
     "user", (done) => {
     request(app)
       .post("/api/users/register")
@@ -67,8 +67,8 @@ describe("Users Controller", () => {
       .end(done);
   });
 
-  it("Post /api/users/register with invalid credintials should not register " +
-   " new  user", (done) => {
+  it("POST /api/users/register with invalid credintials should not register " +
+   "new  user", (done) => {
     request(app)
       .post("/api/users/register")
       .send({
@@ -89,7 +89,7 @@ describe("Users Controller", () => {
       .end(done);
   });
 
-  it("Post /api/users/register should not register existing user", (done) => {
+  it("POST /api/users/register should not register existing user", (done) => {
     request(app)
       .post("/api/users/register")
       .send({
@@ -106,6 +106,39 @@ describe("Users Controller", () => {
           if (err) done(err);
           count.should.equal(3);
         });
+      })
+      .end(done);
+  });
+
+  it("POST /api/users/authenticate with valid credintials should " +
+    "authenticate user", (done) => {
+    request(app)
+      .post("/api/users/authenticate")
+      .send({
+        username: "anwar",
+        password: "12345"
+      })
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        res.body.should.have.property("token");
+      })
+      .end(done);
+  });
+
+  it("POST /api/users/authenticate with invalid credintials should not " +
+    "authenticate user", (done) => {
+    request(app)
+      .post("/api/users/authenticate")
+      .send({
+        username: "anwar",
+        password: "67890"
+      })
+      .expect("Content-Type", /json/)
+      .expect(403)
+      .expect((res) => {
+        res.body.should.have.property("message");
+        res.body.message.should.equal("Wrong password!");
       })
       .end(done);
   });

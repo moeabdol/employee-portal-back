@@ -23,15 +23,10 @@ describe("User model", () => {
       role: "hr"
     });
 
-    mohammad.save((err) => {
+    User.insertMany([mohammad, abdelgadir], (err) => {
       if (err) return done(err);
+      done();
     });
-
-    abdelgadir.save((err) => {
-      if (err) return done(err);
-    });
-
-    done();
   });
 
   after((done) => {
@@ -45,8 +40,8 @@ describe("User model", () => {
     User.count((err, count) => {
       if (err) done(err);
       count.should.equal(2);
+      done();
     });
-    done();
   });
 
   it("should find specific user by username", (done) => {
@@ -56,8 +51,8 @@ describe("User model", () => {
       user.username.should.equal("mohammad");
       user.email.should.equal("mohd.a.saed@gmail.com");
       user.role.should.equal("admin");
+      done();
     });
-    done();
   });
 
   it("should find specific user by email", (done) => {
@@ -67,8 +62,8 @@ describe("User model", () => {
       user.username.should.equal("abdelgadir");
       user.email.should.equal("abdelgadir@axisx.com");
       user.role.should.equal("hr");
+      done();
     });
-    done();
   });
 
   it("should encrypt password when new user is registered", (done) => {
@@ -82,8 +77,8 @@ describe("User model", () => {
     user.save((err, user) => {
       if (err) done(err);
       user.password.should.not.equal("12345");
+      done();
     });
-    done();
   });
 
   it("should encrypt password if password is updated", (done) => {
@@ -96,10 +91,27 @@ describe("User model", () => {
 
       user.save((err, user) => {
         if (err) done(err);
-        user.password.should.not.equal("67890");
+        user.password.should.not.equal("678901");
         user.password.should.not.equal(password);
+        done();
       });
     });
-    done();
+  });
+
+  it("should compare password to hash correctly", (done) => {
+    let newUser = new User({
+      username: "new user",
+      email: "new@user.com",
+      password: "12345",
+    });
+
+    newUser.save((err, user) => {
+      if (err) return done(err);
+      user.comparePassword("12345", (err, isMatch) => {
+        if (err) return done(err);
+        isMatch.should.be.true;
+        done();
+      });
+    });
   });
 });

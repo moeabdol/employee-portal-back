@@ -1,4 +1,6 @@
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const config = require("../config");
 
 const register = (req, res) => {
   let user = new User(req.body);
@@ -11,6 +13,37 @@ const register = (req, res) => {
       email: user.email,
       role: user.role,
       message: "Resource created successfully"
+    });
+  });
+};
+
+const authenticate = (req, res) => {
+  User.findByUsername(req.body.username, (err, user) => {
+    if (err) return res.status(500).json({ message: "Something went wrong!" });
+    if (!user) {
+      return res.status(400).json({ message: "User not registered!" });
+    }
+
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      if (err) {
+        return res.status(500).json({
+          message: "Something went wrong!"
+        });
+      }
+
+      if (!isMatch) {
+        return res.status(403).json({
+          message: "Wrong password!"
+        });
+      }
+
+      const token = jwt.sign({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }, config.secret, { expiresIn: 604800 });
+      res.status(200).json({ token: "JWT " + token });
     });
   });
 };
@@ -75,6 +108,7 @@ const destroy = (req, res) => {
 
 module.exports = {
   register,
+  authenticate,
   index,
   show,
   update,
