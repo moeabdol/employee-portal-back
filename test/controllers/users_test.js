@@ -42,33 +42,10 @@ describe("Users Controller", () => {
     done();
   });
 
-  it("GET /api/users should get all users", (done) => {
+  it("Post /api/users/register with valid credintials should register new " +
+    "user", (done) => {
     request(app)
-      .get("/api/users")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .expect((res) => {
-        res.body.length.should.equal(2);
-      })
-      .end(done);
-  });
-
-  it("GET /api/users/:id should get specific user", (done) => {
-    request(app)
-      .get(`/api/users/${mohammadId}`)
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .expect((res) => {
-        res.body.username.should.equal("mohammad");
-        res.body.email.should.equal("mohd.a.saed@gmail.com");
-        res.body.role.should.equal("admin");
-      })
-      .end(done);
-  });
-
-  it("POST /api/users should create a new user", (done) => {
-    request(app)
-      .post("/api/users")
+      .post("/api/users/register")
       .send({
         username: "anwar",
         email: "anwar@axisx.com",
@@ -90,51 +67,72 @@ describe("Users Controller", () => {
       .end(done);
   });
 
-  it("POST /api/users should not create a new username if user already exists",
-    (done) => {
-      request(app)
-        .post("/api/users")
-        .send({
-          username: "mohammad",
-          email: "test@gmail.com",
-          password: "12345",
-          role: "manager"
-        })
-        .expect("Content-Type", /json/)
-        .expect(500)
-        .expect((res) => {
-          res.body.message.should.equal("Something went wrong!");
-          User.count((err, count) => {
-            if (err) done(err);
-            count.should.equal(3);
-          });
-        })
-        .end(done);
-    }
-  );
+  it("Post /api/users/register with invalid credintials should not register " +
+   " new  user", (done) => {
+    request(app)
+      .post("/api/users/register")
+      .send({
+        username: "",
+        email: "",
+        password: "12345",
+        role: "manager"
+      })
+      .expect("Content-Type", /json/)
+      .expect(500)
+      .expect((res) => {
+        res.body.message.should.equal("Something went wrong!");
+        User.count((err, count) => {
+          if (err) done(err);
+          count.should.equal(3);
+        });
+      })
+      .end(done);
+  });
 
-  it("POST /api/users should not create a new user if email already exists",
-    (done) => {
-      request(app)
-        .post("/api/users")
-        .send({
-          username: "ahmed",
-          email: "mohd.a.saed@gmail.com",
-          password: "12345",
-          role: "manager"
-        })
-        .expect("Content-Type", /json/)
-        .expect(500)
-        .expect((res) => {
-          res.body.message.should.equal("Something went wrong!");
-          User.count((err, count) => {
-            if (err) done(err);
-            count.should.equal(3);
-          });
-        })
-        .end(done);
-    }
-  );
+  it("Post /api/users/register should not register existing user", (done) => {
+    request(app)
+      .post("/api/users/register")
+      .send({
+        username: "mohammad",
+        email: "mohd.a.saed@gmail.com",
+        password: "12345",
+        role: "manager"
+      })
+      .expect("Content-Type", /json/)
+      .expect(500)
+      .expect((res) => {
+        res.body.message.should.equal("Something went wrong!");
+        User.count((err, count) => {
+          if (err) done(err);
+          count.should.equal(3);
+        });
+      })
+      .end(done);
+  });
+
+  it("GET /api/users should get all users", (done) => {
+    request(app)
+      .get("/api/users")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        res.body.length.should.equal(3);
+      })
+      .end(done);
+  });
+
+  it("GET /api/users/:id should get specific user", (done) => {
+    request(app)
+      .get(`/api/users/${mohammadId}`)
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .expect((res) => {
+        res.body.username.should.equal("mohammad");
+        res.body.email.should.equal("mohd.a.saed@gmail.com");
+        res.body.role.should.equal("admin");
+      })
+      .end(done);
+  });
 
   it("PUT /api/users/:id should update existing user", (done) => {
     request(app)

@@ -1,5 +1,20 @@
 const User = require("../models/user");
 
+const register = (req, res) => {
+  let user = new User(req.body);
+  user.save((err, user) => {
+    if (err) return res.status(500).json({ message: "Something went wrong!" });
+
+    res.status(201).json({
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      message: "Resource created successfully"
+    });
+  });
+};
+
 const index = (req, res) => {
   User.find((err, users) => {
     if (err) return res.status(500).json({ message: "Something went wrong!" });
@@ -17,21 +32,6 @@ const show = (req, res) => {
       username: user.username,
       email: user.email,
       role: user.role
-    });
-  });
-};
-
-const create = (req, res) => {
-  let user = new User(req.body);
-  user.save((err, user) => {
-    if (err) return res.status(500).json({ message: "Something went wrong!" });
-
-    res.status(201).json({
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      message: "Resource created successfully"
     });
   });
 };
@@ -74,9 +74,9 @@ const destroy = (req, res) => {
 };
 
 module.exports = {
+  register,
   index,
   show,
-  create,
   update,
   destroy
 };
