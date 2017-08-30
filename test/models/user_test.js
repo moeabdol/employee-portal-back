@@ -71,7 +71,7 @@ describe("User model", () => {
     done();
   });
 
-  it("should encrypt password", (done) => {
+  it("should encrypt password when new user is registered", (done) => {
     let user = new User({
       username: "anwar",
       email: "anwar@axisx.com",
@@ -80,8 +80,25 @@ describe("User model", () => {
     });
 
     user.save((err, user) => {
-      if (err)  done(err);
+      if (err) done(err);
       user.password.should.not.equal("12345");
+    });
+    done();
+  });
+
+  it("should encrypt password if password is updated", (done) => {
+    User.findByUsername("anwar", (err, user) => {
+      if (err) return done(err);
+      if (!user) return done(false);
+
+      const password = user.password;
+      user.password = "67890";
+
+      user.save((err, user) => {
+        if (err) done(err);
+        user.password.should.not.equal("67890");
+        user.password.should.not.equal(password);
+      });
     });
     done();
   });
