@@ -6,7 +6,7 @@ const mongoose = require("../../config/mongoose");
 const User = mongoose.model("User");
 
 describe("Users Controller", () => {
-  let mohammad, abdelgadir, mohammadId;
+  let mohammad, abdelgadir, mohammadId, anwarJwt;
 
   before((done) => {
     mohammad = new User({
@@ -68,7 +68,7 @@ describe("Users Controller", () => {
   });
 
   it("POST /api/users/register with invalid credintials should not register " +
-   "new  user", (done) => {
+   "new user", (done) => {
     request(app)
       .post("/api/users/register")
       .send({
@@ -122,6 +122,7 @@ describe("Users Controller", () => {
       .expect(200)
       .expect((res) => {
         res.body.should.have.property("token");
+        anwarJwt = res.body.token;
       })
       .end(done);
   });
@@ -146,6 +147,7 @@ describe("Users Controller", () => {
   it("GET /api/users should get all users", (done) => {
     request(app)
       .get("/api/users")
+      .set("Authorization", anwarJwt)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
@@ -157,6 +159,7 @@ describe("Users Controller", () => {
   it("GET /api/users/:id should get specific user", (done) => {
     request(app)
       .get(`/api/users/${mohammadId}`)
+      .set("Authorization", anwarJwt)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
@@ -170,6 +173,7 @@ describe("Users Controller", () => {
   it("PUT /api/users/:id should update existing user", (done) => {
     request(app)
       .put(`/api/users/${mohammadId}`)
+      .set("Authorization", anwarJwt)
       .send({
         email: "admin.r99@gmail.com",
         role: "hr"
@@ -192,6 +196,7 @@ describe("Users Controller", () => {
   it("PUT /api/users/:id should not update non-existant user", (done) => {
     request(app)
       .put("/api/users/12345")
+      .set("Authorization", anwarJwt)
       .send({
         email: "admin.r99@gmail.com",
         role: "hr"
@@ -207,6 +212,7 @@ describe("Users Controller", () => {
   it("DELETE /api/users/:id should destroy user", (done) => {
     request(app)
       .delete(`/api/users/${mohammadId}`)
+      .set("Authorization", anwarJwt)
       .expect("Content-Type", /json/)
       .expect(200)
       .expect((res) => {
@@ -223,6 +229,7 @@ describe("Users Controller", () => {
     User.findByIdAndRemove(mohammadId);
     request(app)
       .delete(`/api/users/${mohammadId}`)
+      .set("Authorization", anwarJwt)
       .expect("Content-Type", /json/)
       .expect(400)
       .expect((res) => {
