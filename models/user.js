@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-
+const mongoose    = require("mongoose");
+const bcrypt      = require("bcryptjs");
 const SALT_FACTOR = 10;
 
 mongoose.Promise = global.Promise;
@@ -13,6 +12,21 @@ const UserSchema = mongoose.Schema({
 });
 
 UserSchema.index({ username: 1, email: 1 }, { unique: true });
+
+UserSchema.pre("save", function(next) {
+  const user = this;
+  if (this.isModified("password") || this.isNew) {
+    bcrypt.genSalt(SALT_FACTOR, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        if (err) return next(err);
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
 
 UserSchema.statics.findByUsername = function(username, done) {
   this.findOne({ username: username }, (err, user) => {

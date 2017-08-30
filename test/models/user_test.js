@@ -45,8 +45,8 @@ describe("User model", () => {
     User.count((err, count) => {
       if (err) done(err);
       count.should.equal(2);
-      done();
     });
+    done();
   });
 
   it("should find specific user by username", (done) => {
@@ -56,8 +56,8 @@ describe("User model", () => {
       user.username.should.equal("mohammad");
       user.email.should.equal("mohd.a.saed@gmail.com");
       user.role.should.equal("admin");
-      done();
     });
+    done();
   });
 
   it("should find specific user by email", (done) => {
@@ -67,7 +67,22 @@ describe("User model", () => {
       user.username.should.equal("abdelgadir");
       user.email.should.equal("abdelgadir@axisx.com");
       user.role.should.equal("hr");
-      done();
     });
+    done();
+  });
+
+  it("should encrypt password", (done) => {
+    let user = new User({
+      username: "anwar",
+      email: "anwar@axisx.com",
+      role: "hr",
+      password: "12345"
+    });
+
+    user.save((err, user) => {
+      if (err)  done(err);
+      user.password.should.not.equal("12345");
+    });
+    done();
   });
 });
