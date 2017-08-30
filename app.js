@@ -15,7 +15,7 @@ require("./config/mongoose");
 app.use(cors());
 app.use(bodyParser.json());
 
-// require("./config/passport")(passport);
+require("./config/passport")(passport);
 app.use(passport.initialize());
 
 app.use("/api", routes);
